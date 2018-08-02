@@ -34,6 +34,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -278,7 +279,9 @@ public class Wechat extends CordovaPlugin {
 
         try {
             final String appid = params.getString("appid");
-            final String savedAppid = getAppId(cordova.getActivity());
+            // final String savedAppid = getAppId(cordova.getActivity());
+            // getAppid不需要参数,返回的是一个静态字符串，-第一个bug
+             final String savedAppid = getAppId();
             if (!savedAppid.equals(appid)) {
                 this.saveAppId(cordova.getActivity(), appid);
             }
@@ -542,15 +545,15 @@ public class Wechat extends CordovaPlugin {
      *
      * @param url
      * @return
-     */    
+     */
     protected  Bitmap compressImage(Bitmap image,Integer maxSize) {
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         image.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         int options = 90;
 
-        while (baos.toByteArray().length / 1024 > maxSize) { 
-            baos.reset(); 
+        while (baos.toByteArray().length / 1024 > maxSize) {
+            baos.reset();
             image.compress(Bitmap.CompressFormat.JPEG, options, baos);
             options -= 10;
         }
@@ -624,7 +627,7 @@ public class Wechat extends CordovaPlugin {
         return null;
     }
 
-    public static String getAppId() {
+    public  String getAppId() {
         if (appId == null) {
             appId = preferences.getString(WXAPPID_PROPERTY_KEY, "");
         }
